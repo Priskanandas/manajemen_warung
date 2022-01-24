@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Activitylog\Models\Activity;
 use App\Http\Requests\SettingRequest;
 use Carbon\Carbon;
+use App\Models\Harga;
+use App\Models\Pembelian;
+use App\Models\Barang;
+use DB;
 
 class HargaController extends Controller
 {
@@ -17,9 +21,14 @@ class HargaController extends Controller
     */
     public function index()
     {
-        $logs = Activity::where('causer_id', auth()->id())->latest()->paginate(5);
 
-        return view('admin.harga.harga', compact('logs'));
+        $harga = DB::table('harga')
+            ->join('barang', 'harga.id_barang', '=', 'barang.id')
+            ->join('pembelian', 'harga.id_pembelian', '=', 'pembelian.id')
+            ->select('harga.*', 'barang.nama_barang', 'pembelian.tanggal_beli')
+            ->get();
+  
+  return view('admin.harga.harga',['harga'=>$harga]);
     }
 
     /**

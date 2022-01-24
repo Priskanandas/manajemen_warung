@@ -15,21 +15,45 @@
     />
     <x-nav-link 
         text="Warung" 
-        icon="tachometer-alt" 
+        icon="fas fa-store"
         url="{{ route('admin.warung') }}"
         active="{{ request()->routeIs('admin.warung') ? ' active' : '' }}"
     />
     <x-nav-link 
         text="Pembelian" 
-        icon="tachometer-alt" 
+        icon="fas fa-shopping-cart"
         url="{{ route('admin.pembelian') }}"
         active="{{ request()->routeIs('admin.pembelian') ? ' active' : '' }}"
     />
     <x-nav-link 
+        text="Barang" 
+        icon="fas fa-piggy-bank"
+        url="{{ route('admin.warung') }}"
+        active="{{ request()->routeIs('admin.warung') ? ' active' : '' }}"
+    />
+    <x-nav-link 
+        text="Kategori" 
+        icon="fas fa-tags"
+        url="{{ route('admin.warung') }}"
+        active="{{ request()->routeIs('admin.warung') ? ' active' : '' }}"
+    />
+    <x-nav-link 
+        text="Penjualan" 
+        icon="fas fa-shopping-cart"
+        url="{{ route('admin.warung') }}"
+        active="{{ request()->routeIs('admin.warung') ? ' active' : '' }}"
+    />
+    <x-nav-link 
         text="Harga" 
-        icon="tachometer-alt" 
+        icon="fas fa-dollar-sign"
         url="{{ route('admin.harga') }}"
         active="{{ request()->routeIs('admin.harga') ? ' active' : '' }}"
+    />
+    <x-nav-link 
+        text="Pembayaran" 
+        icon="fas fa-cash-register"
+        url="{{ route('admin.warung') }}"
+        active="{{ request()->routeIs('admin.warung') ? ' active' : '' }}"
     />
     
     <hr class="sidebar-divider mb-0">

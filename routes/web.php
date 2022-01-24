@@ -14,7 +14,6 @@ Route::group([
 	'as' => 'admin.'
 ], function(){
 	Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-	Route::get('/warung', [WarungController::class, 'index'])->name('warung');
 	Route::get('/pembelian', [PembelianController::class, 'index'])->name('pembelian');
 	Route::get('/harga', [HargaController::class, 'index'])->name('harga');
 
@@ -46,7 +45,29 @@ Route::group([
 	Route::get('/roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
 	Route::post('/roles/{id}/update', [RoleController::class, 'update'])->name('roles.update');
 	Route::post('/roles/{id}/delete', [RoleController::class, 'destroy'])->name('roles.delete');
+	//warung 
+	Route::get('/warung', [WarungController::class, 'index'])->name('warung');
+    Route::get('/warung/tambah', [WarungController::class, 'tambah'])->name('warung.tambah');
+    Route::post('/warung/store', [WarungController::class, 'store'])->name('warung.store');
+    Route::post('/warung/update/{id}', [WarungController::class, 'update'])->name('warung.update');
+    Route::get('/warung/edit/{id}', [WarungController::class, 'edit'])->name('warung.edit');
+    Route::get('/warung/delete/{id}', [WarungController::class, 'delete'])->name('warung.delete');
 
+	//pembelian
+	Route::get('/pembelian', [PembelianController::class, 'index'])->name('pembelian');
+    Route::get('/pembelian/tambah', [PembelianController::class, 'tambah'])->name('pembelian.tambah');
+    Route::post('/pembelian/store', [PembelianController::class, 'store'])->name('pembelian.store');
+    Route::post('/pembelian/update/{id}', [PembelianController::class, 'update'])->name('pembelian.update');
+    Route::get('/pembelian/edit/{id}', [PembelianController::class, 'edit'])->name('pembelian.edit');
+    Route::get('/pembelian/delete/{id}', [PembelianController::class, 'delete'])->name('pembelian.delete');
+
+	//harga
+	Route::get('/harga', [HargaController::class, 'index'])->name('harga');
+    Route::get('/harga/tambah', [HargaController::class, 'tambah'])->name('harga.tambah');
+    Route::post('/harga/store', [HargaController::class, 'store'])->name('harga.store');
+    Route::post('/harga/update/{id}', [HargaController::class, 'update'])->name('harga.update');
+    Route::get('/harga/edit/{id}', [HargaController::class, 'edit'])->name('harga.edit');
+    Route::get('/harga/delete/{id}', [HargaController::class, 'delete'])->name('harga.delete');
 });
 
 
