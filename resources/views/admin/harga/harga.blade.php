@@ -3,10 +3,17 @@
         Harga
     </x-slot>
 
-    <div class="col text-right">
-        <a href="{{ route('admin.pembelian.tambah') }}" class="btn btn-primary">Tambah</a>
-    </div>
-    <div class="table-responsive">
+    @if(session()->has('success'))
+    <x-alert type="success" message="{{ session()->get('success') }}" />
+    @endif
+    <x-card>
+        <x-slot name="title">All Harga</x-slot>
+        <x-slot name="option">
+            <a href="{{ route('admin.harga.create') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i>
+            </a>
+        </x-slot>
+
         <table class="table table-bordered table-hovered" id="table">
             <thead>
                 <tr align="center">
@@ -46,8 +53,7 @@
                 @endforeach
             </tbody>
         </table>
-    </div>
-
+</x-card>
 
 
     <x-slot name="script">

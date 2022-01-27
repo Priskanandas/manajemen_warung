@@ -3,11 +3,18 @@
         Pembelian
     </x-slot>
 
-    <div class="col text-right">
-        <a href="{{ route('admin.pembelian.tambah') }}" class="btn btn-primary">Tambah</a>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hovered" id="table">
+    @if(session()->has('success'))
+    <x-alert type="success" message="{{ session()->get('success') }}" />
+    @endif
+    <x-card>
+        <x-slot name="title">All Pembelian</x-slot>
+        <x-slot name="option">
+            <a href="{{ route('admin.pembelian.tambah') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i>
+            </a>
+        </x-slot>
+
+        <table class="table table-bordered">
             <thead>
                 <tr align="center">
                     <th width="5%">ID</th>
@@ -39,11 +46,11 @@
                 @endforeach
             </tbody>
         </table>
-    </div>
+    	</x-card>
 
-                   
-    <x-slot name="script">
-        <script src="{{ asset('dist/js/demo/chart-area-demo.js') }}"></script>
-    </x-slot>
+
+        <x-slot name="script">
+            <script src="{{ asset('dist/js/demo/chart-area-demo.js') }}"></script>
+        </x-slot>
 </x-app-layout>
 

@@ -43,7 +43,8 @@ class WarungController extends Controller
         ]);
         
         //lalu reireact ke route admin.warung dengan mengirim flashdata(session) berhasil tambah data untuk manampilkan alert succes tambah data
-        return redirect()->route('admin.warung')->with('status','Berhasil Menambah Kategori');
+        return redirect()->route("admin.warung")
+        ->with('success','Warung created successfully');
     }
 
     public function update($id,Request $request)
@@ -56,7 +57,8 @@ class WarungController extends Controller
 
         //lalu simpan perubahan
         $warung->save();
-        return redirect()->route('admin.warung')->with('status','Berhasil Mengubah Kategori');
+        return redirect()->route('admin.warung')
+        ->with('success','Warung updated successfully');
     }
 
     //function menampilkan form edit
@@ -73,6 +75,6 @@ class WarungController extends Controller
         //hapus data sesuai id dari parameter
         Warung::destroy($id);
         
-        return redirect()->route('admin.warung')->with('status','Berhasil Mengahapus Kategori');
-    }
+        return redirect()->route('admin.warung')
+                        ->with('success','Warung deleted successfully');    }
 }

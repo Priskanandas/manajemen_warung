@@ -63,7 +63,7 @@ Route::group([
 
 	//harga
 	Route::get('/harga', [HargaController::class, 'index'])->name('harga');
-    Route::get('/harga/tambah', [HargaController::class, 'tambah'])->name('harga.tambah');
+    Route::get('/harga/create', [HargaController::class, 'create'])->name('harga.create');
     Route::post('/harga/store', [HargaController::class, 'store'])->name('harga.store');
     Route::post('/harga/update/{id}', [HargaController::class, 'update'])->name('harga.update');
     Route::get('/harga/edit/{id}', [HargaController::class, 'edit'])->name('harga.edit');

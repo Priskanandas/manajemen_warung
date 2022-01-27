@@ -3,12 +3,20 @@
         Edit Warung
     </x-slot>
 
+    {{-- show alert if there is errors --}}
+    <x-alert-error />
+
+    @if(session()->has('success'))
+    <x-alert type="success" message="{{ session()->get('success') }}" />
+    @endif
+
     <div class="row mb-3">
 
         <div class="col text-right">
             <a href="javascript:void(0)" onclick="window.history.back()" class="btn btn-primary">Kembali</a>
         </div>
     </div>
+    
     <div class="row">
         <div class="col-md-12">
             <form action="{{ route('admin.warung.update',[$warung->id]) }}" method="POST">
