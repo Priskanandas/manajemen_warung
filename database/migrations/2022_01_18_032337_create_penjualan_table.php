@@ -13,23 +13,23 @@ class CreatePenjualanTable extends Migration
      */
     public function up()
     {
-        Schema::create('penjualan', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_barang')->nullable();
-            $table->unsignedInteger('id_pelayan')->nullable();
-            $table->unsignedBigInteger('id_pembayaran')->nullable();
-            $table->string('satuan');
-            $table->date('tanggal');
-            $table->integer('harga_barang');
-            $table->integer('jml_beli');
-            $table->integer('total_harga');
-            $table->timestamps();
+       Schema::create('penjualan', function (Blueprint $table) {
+    $table->id();
+    $table->unsignedBigInteger('id_pembayaran'); // foreign key ke header
+    $table->unsignedBigInteger('id_barang');
+    $table->unsignedBigInteger('id_warung');
+    $table->string('satuan')->nullable();
+    $table->date('tanggal');
+    $table->integer('jml_beli');
+    $table->integer('harga_jual');
+    $table->integer('total_harga');
+    $table->timestamps();
 
-            $table->foreign('id_barang')->references('id')->on('barang');
-            $table->foreign('id_pelayan')->references('id')->on('users');
-            $table->foreign('id_pembayaran')->references('id')->on('pembayaran');
+    $table->foreign('id_pembayaran')->references('id')->on('pembayaran')->onDelete('cascade');
+    $table->foreign('id_barang')->references('id')->on('barang')->onDelete('restrict');
+    $table->foreign('id_warung')->references('id')->on('warung')->onDelete('cascade');
+});
 
-        });
     }
 
     /**

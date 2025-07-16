@@ -6,28 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateWarungTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('warung', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('nama_warung');
-            $table->string('alamat');
+            $table->string('alamat')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('warung');
     }
 }
+

@@ -14,13 +14,19 @@ class CreatePembayaranTable extends Migration
     public function up()
     {
         Schema::create('pembayaran', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->date('tanggal_bayar');
-            $table->integer('total_bayar');
-            $table->integer('total_uang');
-            $table->integer('uang_kembali');
-            $table->timestamps();
-        });
+    $table->id();
+    $table->unsignedBigInteger('id_warung');
+    $table->unsignedBigInteger('id_pelayan')->nullable(); // user yang melakukan transaksi
+    $table->dateTime('tanggal_bayar');
+    $table->integer('total_bayar');
+    $table->integer('total_uang');
+    $table->integer('uang_kembali');
+    $table->timestamps();
+
+    $table->foreign('id_warung')->references('id')->on('warung')->onDelete('cascade');
+    $table->foreign('id_pelayan')->references('id')->on('users')->onDelete('set null');
+});
+
     }
 
     /**

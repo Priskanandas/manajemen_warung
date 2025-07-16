@@ -1,31 +1,63 @@
+{{-- resources/views/layouts/guest.blade.php (versi baru modern + dark/light) --}}
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link href="img/logo/logo.png" rel="icon">
-        <title>{{ $title }}</title>
-        <link href="{{ asset('dist/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-        <link href="{{ asset('dist/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
-        <link href="{{ asset('dist/css/ruang-admin.min.css') }}" rel="stylesheet">
-    </head>
-    <body class="bg-gradient-login">
-        {{-- Register Content --}}
-        <div class="container-login">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    {{ $slot }}
-                </div>
-            </div>
-        </div>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $title ?? 'SuryaPOS' }}</title>
 
-        {{-- Register Content --}}
-        <script src="{{ asset('dist/vendor/jquery/jquery.min.js') }}"></script>
-        <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('dist/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-        <script src="{{ asset('dist/js/ruang-admin.min.js') }}"></script>
-    </body>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            font-family: 'Inter', sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+        .toggle-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 flex items-center justify-center">
+    <!-- Toggle Theme Button -->
+    <button id="toggleTheme" class="toggle-btn">🌙</button>
+
+    <div class="w-full max-w-md p-6">
+        {{ $slot }}
+    </div>
+
+    <script>
+        const toggleBtn = document.getElementById('toggleTheme');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+
+        if (savedTheme) {
+            html.setAttribute('data-theme', savedTheme);
+            html.classList.add(savedTheme);
+            toggleBtn.textContent = savedTheme === 'dark' ? '🌞' : '🌙';
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            html.classList.remove(current);
+            html.classList.add(next);
+            toggleBtn.textContent = next === 'dark' ? '🌞' : '🌙';
+            localStorage.setItem('theme', next);
+        });
+    </script>
+</body>
 </html>

@@ -4,6 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Barang;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+
 
 class BarangSeeder extends Seeder
 {
@@ -14,16 +18,17 @@ class BarangSeeder extends Seeder
      */
     public function run()
     {
-        $Barang = Barang::create([
-          'id_kategori'=> 1,
-           'nama_barang'=> 'aqua',
-           'satuan'=> 'pcs',
-           'kategori'=> 'Minuman',
-           'kd_barang'=> 'aq1',
-           'stok'=> 1,
-           'total_barang'=> 20,
-           'harga_ecer'=> 3500,
-           'harga grosir'=> 70000
+        DB::table('barang')->insert([
+            [
+                'id_kategori' => 1,
+                'id_warung' => 1,
+                'nama_barang' => 'Beras 5kg',
+                'satuan' => 'kg',
+                'kd_barang' => Str::random(5),
+                'stok' => 50,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
         ]);
     }
 }

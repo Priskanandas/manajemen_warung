@@ -6,25 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 class BuatKategoriTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('kategori', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('nama_kategori');
-            $table->timestamps();
-        });
+    $table->id();
+    $table->unsignedBigInteger('id_warung');
+    $table->string('nama_kategori');
+    $table->timestamps();
+
+    $table->foreign('id_warung')->references('id')->on('warung')->onDelete('cascade');
+});
+
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('kategori');

@@ -3,74 +3,159 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Activitylog\Models\Activity;
-use App\Http\Requests\SettingRequest;
-use Carbon\Carbon;
 use App\Models\Pembelian;
 use App\Models\Barang;
-use DB;
-use Illuminate\Support\Arr;
+use App\Models\Harga;
+use Illuminate\Support\Facades\DB;
 
 class PembelianController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $pembelian = DB::table('pembelian')
-        ->join('barang', 'pembelian.id_barang', '=', 'barang.id')
-        ->select('pembelian.*', 'barang.nama_barang')
-        ->get();
-        return view('admin.pembelian.pembelian',['pembelian'=>$pembelian]);
+        $warungId = session('warung_id');
+
+        $pembelian = Pembelian::with(['barang'])
+            ->where('id_warung', $warungId)
+            ->latest()
+            ->get();
+
+        return view('admin.pembelian.pembelian', compact('pembelian'));
     }
-    
+
     public function tambah()
     {
-        $barang = Barang::all();
-        return view ('admin.pembelian.tambah',compact('barang'));
+        $warungId = session('warung_id');
+        $barang = Barang::where('id_warung', $warungId)->get();
+
+        return view('admin.pembelian.tambah', compact('barang'));
     }
-    
+
     public function store(Request $request)
     {
-        $request->validate([
-            'tanggal_beli' => 'required',
-            'jml_beli' => 'required'
+        $warungId = session('warung_id');
 
+        $request->validate([
+            'id_barang'   => 'required|exists:barang,id',
+            'jml_beli'    => 'required|integer|min:1',
+            'harga_beli'  => 'required|integer|min:0',
         ]);
-        
-        Pembelian::create($request->all());
-      
-        return redirect()->route('admin.pembelian')
-                        ->with('success','Pembelian created successfully');
+
+        $barang = Barang::where('id', $request->id_barang)
+            ->where('id_warung', $warungId)
+            ->firstOrFail();
+
+        // Hitung subtotal
+        $subtotal = $request->jml_beli * $request->harga_beli;
+
+        $pembelian = Pembelian::create([
+            'id_warung'   => $warungId,
+            'id_barang'   => $barang->id,
+            'jml_beli'    => $request->jml_beli,
+            'harga_beli'  => $request->harga_beli,
+            'subtotal'    => $subtotal,
+            'tanggal'     => now(),
+        ]);
+
+        // Nonaktifkan harga aktif lama
+        Harga::where('id_barang', $barang->id)
+            ->where('status', 'active')
+            ->update(['status' => 'non-active']);
+
+        // Tambahkan harga baru
+        Harga::create([
+            'id_warung'      => $warungId,
+            'id_barang'      => $barang->id,
+            'id_pembelian'   => $pembelian->id,
+            'harga_beli'     => $request->harga_beli,
+            'harga_jual'     => 0,
+            'status'         => 'active',
+        ]);
+
+        return redirect()->route('admin.pembelian')->with('success', 'Pembelian berhasil ditambahkan.');
     }
-    
+
     public function edit($id)
     {
-        $pembelian = Pembelian::find($id);
-        $barang = Barang::all();
-    
-        return view('admin.pembelian.edit',compact('pembelian','barang'));
-    }
-    
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'tanggal_beli' => 'required',
-            'jml_beli' => 'required'
+        $warungId = session('warung_id');
 
-        ]);
-        $input=$request->all();
-        $pembelian = Pembelian::find($id);
-        $pembelian ->update {$input};
-      
-    
-        return redirect()->route('admin.pembelian')
-                        ->with('success','Pembelian updated successfully');
+        $pembelian = Pembelian::with('barang')
+            ->where('id', $id)
+            ->where('id_warung', $warungId)
+            ->firstOrFail();
+
+        $barang = Barang::where('id_warung', $warungId)->get();
+
+        return view('admin.pembelian.edit', compact('pembelian', 'barang'));
     }
-    
+
+    public function update(Request $request, $id)
+{
+    $warungId = session('warung_id');
+
+    $request->validate([
+        'id_barang'   => 'required|exists:barang,id',
+        'jml_beli'    => 'required|integer|min:1',
+        'harga_beli'  => 'required|integer|min:0',
+    ]);
+
+    $pembelian = Pembelian::where('id', $id)
+        ->where('id_warung', $warungId)
+        ->firstOrFail();
+
+    $barang = Barang::where('id', $request->id_barang)
+        ->where('id_warung', $warungId)
+        ->firstOrFail();
+
+    $subtotal = $request->jml_beli * $request->harga_beli;
+
+    $pembelian->update([
+        'id_barang'   => $barang->id,
+        'jml_beli'    => $request->jml_beli,
+        'harga_beli'  => $request->harga_beli,
+        'subtotal'    => $subtotal,
+        'tanggal'     => now(),
+    ]);
+
+    Harga::where('id_barang', $barang->id)
+        ->where('status', 'active')
+        ->update(['status' => 'non-active']);
+
+    Harga::create([
+        'id_warung'      => $warungId,
+        'id_barang'      => $barang->id,
+        'id_pembelian'   => $pembelian->id,
+        'harga'          => $request->harga_beli,
+        'harga_jual'     => 0,
+        'status'         => 'active',
+    ]);
+
+    return redirect()->route('admin.pembelian')->with('success', 'Pembelian berhasil diperbarui.');
+}
+
+
     public function delete($id)
     {
-        Pembelian::find($id)->delete();
-        return redirect()->route('admin.pembelian')
-                        ->with('success','Pembelian deleted successfully');
+        $warungId = session('warung_id');
+
+        $pembelian = Pembelian::where('id', $id)
+            ->where('id_warung', $warungId)
+            ->firstOrFail();
+
+        $pembelian->delete();
+
+        return redirect()->route('admin.pembelian')->with('success', 'Pembelian berhasil dihapus.');
+    }
+
+    public function ajax($id)
+    {
+        $warungId = session('warung_id');
+
+        $barang = DB::table('barang')
+            ->where('id', $id)
+            ->where('id_warung', $warungId)
+            ->select('nama_barang', 'satuan')
+            ->first();
+
+        return response()->json($barang);
     }
 }

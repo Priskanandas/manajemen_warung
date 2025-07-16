@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Harga;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 
 class HargaSeeder extends Seeder
 {
@@ -15,15 +17,16 @@ class HargaSeeder extends Seeder
      */
     public function run()
     {
-        $harga = Harga::create([
-            'id_barang'=> 1, 
-            'tanggal_beli'=>  Carbon::create('2022', '01', '20'), 
-            'id_pembelian'=> 1,
-             'harga_ecer'=> 3500,
-             'harga_grosir'=> 70000, 
-             'harga_jual'=> 4000, 
-             'status'=> 'active'
-
+        DB::table('harga')->insert([
+            [
+                'id_barang' => 1,
+                'id_warung' => 1,
+                'id_pembelian' => 2,
+                'harga_jual' => 70000,
+                'status' => 'active',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
         ]);
     }
 }

@@ -13,23 +13,20 @@ class CreateBarangTable extends Migration
      */
     public function up()
     {
-        Schema::create('barang', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_kategori')->nullable();
-            $table->string('nama_barang');
-            $table->string('satuan')->nullable();
-            $table->string('kategori')->nullable();
-            $table->string('kd_barang');
-            $table->integer('stok');
-            $table->integer('total_barang');
-            $table->integer('harga_ecer');
-            $table->integer('harga grosir');
-            $table->timestamps();
-        });
-            Schema::table('barang', function($table) {
-            
-            $table->foreign('id_kategori')->references('id')->on('kategori');
-        });
+       Schema::create('barang', function (Blueprint $table) {
+    $table->id();
+    $table->unsignedBigInteger('id_warung'); // ← penting
+    $table->unsignedBigInteger('id_kategori')->nullable();
+    $table->string('kd_barang');
+    $table->string('nama_barang');
+    $table->string('satuan')->nullable();
+    $table->integer('stok')->default(0);
+    $table->timestamps();
+
+    $table->foreign('id_warung')->references('id')->on('warung')->onDelete('cascade');
+    $table->foreign('id_kategori')->references('id')->on('kategori')->onDelete('set null');
+});
+
        
     }
 

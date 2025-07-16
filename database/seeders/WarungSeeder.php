@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Warung;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 
 class WarungSeeder extends Seeder
 {
@@ -15,8 +18,11 @@ class WarungSeeder extends Seeder
     public function run()
     {
         $warung = Warung::create([
-            'nama_warung' => 'Sumber Rejeki',
-            'alamat' => 'Purworejo' 
+            'user_id' => 2,
+            'nama_warung' => 'Surya Grosir',
+            'alamat' => 'Krendetan, Bagelen, Purworejo',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
     }
 }

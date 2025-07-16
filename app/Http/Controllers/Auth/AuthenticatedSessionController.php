@@ -4,16 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
-     *
-     * @return \Illuminate\View\View
+     * Tampilkan form login
      */
     public function create()
     {
@@ -21,34 +18,66 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
-     *
-     * @param  \App\Http\Requests\Auth\LoginRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Proses login
      */
     public function store(LoginRequest $request)
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
+    $request->session()->regenerate();
 
-        $request->session()->regenerate();
+    $user = Auth::user();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+    // Jika admin
+    if ($user->hasRole('Admin')) {
+        $jumlahWarung = $user->warungs()->count();
+
+        if ($jumlahWarung === 1) {
+            $warung = $user->warungs()->first();
+            session([
+                'warung_id' => $warung->id,
+                'nama_warung' => $warung->nama_warung,
+            ]);
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($jumlahWarung > 1) {
+            return redirect()->route('warung.select');
+        }
+
+        // Admin tapi tidak punya warung
+        return redirect('/')->with('error', 'Anda login sebagai Admin dan tidak memiliki warung.');
     }
 
-    /**
-     * Destroy an authenticated session.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Request $request)
-    {
-        Auth::guard('web')->logout();
+    // Jika user biasa
+    $jumlahWarung = $user->warungs()->count();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+    if ($jumlahWarung === 0) {
+        return redirect('/')->with('error', 'Tidak ada warung terdaftar.');
     }
+
+    if ($jumlahWarung === 1) {
+        $warung = $user->warungs()->first();
+        session([
+            'warung_id' => $warung->id,
+            'nama_warung' => $warung->nama_warung,
+        ]);
+        return redirect()->intended('/admin/dashboard');
+    }
+
+    return redirect()->route('warung.select');
+}
+
+public function destroy(Request $request)
+{
+    Auth::guard('web')->logout();
+
+    session()->forget('warung_id');
+    session()->forget('nama_warung');
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/');
+}
+
 }

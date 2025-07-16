@@ -1,33 +1,34 @@
 <x-app-layout>
     <x-slot name="title">
-        Dahsboard
+        Dashboard
     </x-slot>
 
     <section class="row">
-        <x-card-sum 
-            text="Total Customer" 
-            value="22" 
-            icon="users" 
-            color="warning"
-        />
-        <x-card-sum 
-            text="Total Visitor" 
-            value="1450" 
-            icon="chart-line" 
-            color="primary"
-        />
-        <x-card-sum 
-            text="Income" 
-            value="$1200" 
-            icon="money-bill" 
-            color="success"
-        />
-        <x-card-sum 
-            text="Total Product" 
-            value="42" 
-            icon="box" 
-            color="danger"
-        />
+<x-card-sum 
+    text="Total Customer" 
+    :value="$totalCustomer" 
+    icon="users" 
+    color="warning"
+/>
+<x-card-sum 
+    text="Total Visitor" 
+    :value="$totalVisitor" 
+    icon="chart-line" 
+    color="primary"
+/>
+<x-card-sum 
+    text="Income" 
+    :value="'Rp ' . number_format($totalIncome, 0, ',', '.')" 
+    icon="money-bill" 
+    color="success"
+/>
+<x-card-sum 
+    text="Total Product" 
+    :value="$totalProduct" 
+    icon="box" 
+    color="danger"
+/>
+
     </section>
 
     <section class="row">
@@ -65,6 +66,9 @@
                 <div class="card-body">
                   <div class="chart-area">
                     <canvas id="myAreaChart"></canvas>
+                    <input type="hidden" id="chart-labels" value='@json($labels)'>
+                    <input type="hidden" id="chart-values" value='@json($values)'>
+
                   </div>
                 </div>
               </div>

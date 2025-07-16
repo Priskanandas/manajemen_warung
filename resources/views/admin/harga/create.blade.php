@@ -1,64 +1,81 @@
 <x-app-layout>
     <x-slot name="title">Tambah Harga</x-slot>
 
-    {{-- show alert if there is errors --}}
     <x-alert-error />
 
     @if(session()->has('success'))
-    <x-alert type="success" message="{{ session()->get('success') }}" />
+        <x-alert type="success" message="{{ session()->get('success') }}" />
     @endif
 
     <div class="row mb-3">
-
         <div class="col text-right">
             <a href="javascript:void(0)" onclick="window.history.back()" class="btn btn-primary">Kembali</a>
         </div>
     </div>
+
     <form action="{{ route('admin.harga.store') }}" method="POST">
         @csrf
 
+        {{-- Pilih Barang --}}
         <div class="form-group">
-            <label for="exampleSelect">Nama Barang</label>
-            <select name="id_barang" class="form-control" id="id_barang">
-                <option value="" disabled>Pilih Barang</option>
+            <label for="id_barang">Nama Barang</label>
+            <select name="id_barang" class="form-control" id="id_barang" required>
+                <option value="" disabled selected>Pilih Barang</option>
                 @foreach($barang as $b)
-                <option value="{{ $b->id }}">{{ $b->nama_barang }}</option>
+                    <option value="{{ $b->id }}" {{ old('id_barang') == $b->id ? 'selected' : '' }}>
+                        {{ $b->nama_barang }}
+                    </option>
                 @endforeach
             </select>
         </div>
+
+        {{-- Harga Beli dari Pembelian (readonly tampilan) --}}
         <div class="form-group">
-            <label for="exampleSelect">Harga Ecer</label>
-            <input class="form-control" placeholder="masukkan harga ecer" name="harga_ecer" type="text" />
+            <label for="harga_beli">Harga Beli (Rp)</label>
+            <input class="form-control" id="harga_beli" type="number" readonly placeholder="Otomatis dari pembelian" />
         </div>
 
+        {{-- Hidden ID Pembelian --}}
+        <input type="hidden" name="id_pembelian" id="id_pembelian" value="{{ old('id_pembelian') }}">
 
+        {{-- Harga Jual --}}
         <div class="form-group">
-            <label for="exampleSelect">Harga Grosir</label>
-            <input class="form-control" placeholder="masukkan harga grosir" name="harga_grosir" type="text" />
+            <label for="harga_jual">Harga Jual (Rp)</label>
+            <input class="form-control" id="harga_jual" name="harga_jual" type="number" min="0" required
+                   value="{{ old('harga_jual') }}" placeholder="Masukkan harga jual tanpa titik/koma" />
         </div>
 
+        {{-- Status --}}
         <div class="form-group">
-            <label for="exampleSelect">Harga Jual</label>
-            <input class="form-control" placeholder="masukkan harga jual" name="harga_jual" type="text" />
+            <label for="status">Status</label>
+            <select name="status" class="form-control" id="status" required>
+                <option value="" disabled selected>Pilih Status</option>
+                <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
+                <option value="non-active" {{ old('status') == 'non-active' ? 'selected' : '' }}>Non-Active</option>
+            </select>
         </div>
-
-
-        <div class="form-group">
-            <label class="form-control-label" for="status_member">Kategori</label>
-            <select class="form-control" id="status" name="status" required="required">
-            <option value="active" <?= $barang->status === 'active' ? 'selected' : '' ?>>active</option>                
-            <option value="non-active" <?= $barang->status === 'non-active' ? 'selected' : '' ?>>non-active</option>                
-
-        </select>
-            </select>    
-        </div>
-                      
 
         <div class="text-right">
-            <button type="submit" class="btn btn-success text-right">Simpan</button>
+            <button type="submit" class="btn btn-success">Simpan</button>
         </div>
-
     </form>
 
+    {{-- jQuery --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    {{-- AJAX ambil harga beli dan id_pembelian --}}
+    <script>
+        $('#id_barang').on('change', function() {
+            const id_barang = $(this).val();
+            const url = '{{ route("admin.harga.ajax", ":id") }}'.replace(':id', id_barang);
+
+            $.get(url, function(data) {
+                // data sudah dalam bentuk JSON
+                $('#harga_beli').val(data.harga_beli ?? '');
+                $('#id_pembelian').val(data.id_pembelian ?? '');
+            }).fail(function() {
+                alert('Gagal mengambil data pembelian.');
+            });
+        });
+    </script>
 </x-app-layout>

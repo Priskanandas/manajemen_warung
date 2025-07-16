@@ -1,35 +1,25 @@
 <x-guest-layout>
-    <x-slot name="title">
-        Register
-    </x-slot>
+    <x-slot name="title">Register</x-slot>
 
-    <x-auth-card>
-    
-        {{-- show alert if there is errors --}}
-        <x-alert-error/>
+    <h2 class="text-2xl font-semibold text-center mb-6">Daftar Akun SuryaPOS</h2>
 
-        <x-slot name="title">
-            Register
-        </x-slot>
-        <form action="{{ route('register') }}" method="POST">
-            @csrf
-            <!-- Name field -->
-            <x-input type="text" text="Name" name="name" />
+    <x-alert-error />
 
-            <!-- Email field -->
-            <x-input type="text" text="Email" name="email" />
+    <form method="POST" action="{{ route('register') }}" class="space-y-4">
+        @csrf
 
-            <!-- Password field -->
-            <x-input type="password" text="Password" name="password" />
+        <x-input type="text" name="name" text="Nama" />
+        <x-input type="text" name="email" text="Email" />
+        <x-input type="password" name="password" text="Password" />
+        <x-input type="password" name="password_confirmation" text="Konfirmasi Password" />
+        <!-- Nama Warung -->
+        <x-input type="text" text="Nama Warung" name="nama_warung" />
 
-            <!-- Password confirmation field -->
-            <x-input type="password" text="Password Confirmation" name="password_confirmation" />
-            
-            <x-button type="primary btn-block" text="Register" for="submit" />
-        </form>
-        <hr>
-        <div class="text-center">
-            <a class="font-weight-bold small" href="{{ route('login') }}">Already have an account?</a>
-        </div>
-    </x-auth-card>
+
+        <x-button type="primary btn-block" text="Register" for="submit" />
+    </form>
+
+    <div class="text-sm mt-4 text-center">
+        Sudah punya akun? <a href="{{ route('login') }}" class="text-yellow-500 hover:underline">Login</a>
+    </div>
 </x-guest-layout>
