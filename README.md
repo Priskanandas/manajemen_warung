@@ -1,8 +1,5 @@
-# QAdmin
-a free, open-source dashboard panel starter kit for Laravel. Just intall and everything is ready
-
-![App Screenshot](https://github.com/superXdev/QAdmin/blob/main/public/dist/img/screenshot/ss.png?raw=true)
-
+# Manajemen Warung
+Aplikasi manajemen warung sederhana berbasis Laravel 8.
   
 
 ## Tech Stack
@@ -20,30 +17,30 @@ a free, open-source dashboard panel starter kit for Laravel. Just intall and eve
 - [akaunting/laravel-setting](https://github.com/akaunting/laravel-setting)
 - [Laravel Modules](https://nwidart.com/laravel-modules/v1)
 
-  
-## Features
 
-- ruangAdmin template
-- Authentication with Laravel Breeze
-- User & Roles management
-- Activity logs
-- Settings menu
-- 15 laravel components ready-to-use
-- Laravel modules
-- Unit testing
+## Fitur
+
+- Manajemen Barang
+- Pembelian & Penjualan
+- Pencatatan Harga
+- Multi-warung (dengan pemilik bisa mengelola lebih dari satu warung)
+- Autentikasi & Role (Admin / User)
+- Laporan Penjualan Harian & Bulanan
+- Pencetakan Nota
+- Tema Gelap & Terang
   
 ## Installation 
-
-You can fork or clone this project
-
 ``` 
-git clone git@github.com:superXdev/QAdmin.git
-cd QAdmin
+git clone https://github.com/Priskanandas/manajemen_warung.git
+cd manajemen_warung
 composer install
-cp .env.example .env <-- edit db config
+cp .env.example .env
 php artisan admin:install
+php artisan key:generate
+php artisan migrate --seed
 ```
 That's it!
+
 
 ## Running Tests
 
